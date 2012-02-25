@@ -1,0 +1,12 @@
+Changes
+MANIFEST
+Makefile.PL
+README
+XS/Makefile.PL
+XS/XS.xs
+XS/marc_subfield.c
+XS/marc_subfield.h
+XS/ppport.h
+XS/typemap
+lib/MARC/XS.pm
+t/subfield.t
