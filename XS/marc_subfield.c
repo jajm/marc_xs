@@ -4,6 +4,11 @@
 
 #include "marc_subfield.h"
 
+struct marc_subfield_s {
+	char code;
+	char *val;
+};
+
 int8_t subfield_code_is_valid(char code)
 {
 	if((code >= '0' && code <= '9')
@@ -100,6 +105,6 @@ void marc_subfield_free(marc_subfield_t *subfield)
 {
 	if(subfield) {
 		free(subfield->val);
+		free(subfield);
 	}
-	free(subfield);
 }

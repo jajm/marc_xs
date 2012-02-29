@@ -3,10 +3,7 @@
 
 #include <stdint.h>
 
-typedef struct {
-	char code;
-	char *val;
-} marc_subfield_t;
+typedef struct marc_subfield_s marc_subfield_t;
 
 marc_subfield_t *
 marc_subfield_new(
