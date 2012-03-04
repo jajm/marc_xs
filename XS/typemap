@@ -1,6 +1,14 @@
 TYPEMAP
 MARC_XS_Subfield	T_PTROBJ_SPECIAL
 MARC_XS_Field	T_PTROBJ_SPECIAL
+uint8_t	T_UV
+uint16_t	T_UV
+uint32_t	T_UV
+uint64_t	T_UV
+int8_t	T_IV
+int16_t	T_IV
+int32_t	T_IV
+int64_t	T_IV
 
 INPUT
 T_PTROBJ_SPECIAL

@@ -21,6 +21,14 @@ my $field = MARC::XS::Field->new('200', '1', '2', @subfields);
 is(ref($field), 'MARC::XS::Field', 'Field is a MARC::XS::Field');
 $tests_done++;
 
+is($field->tag, '200', 'Field tag is 200');
+ok(!$field->is_control_field, 'Field is not a control field');
+say "is_control_field ". $field->is_control_field;
+$field->tag('009');
+is($field->tag, '009', 'Field tag changed to 009');
+ok($field->is_control_field, 'Field is a control field');
+$tests_done += 4;
+
 my @field_subf = $field->subfields;
 my $all_ok = 1;
 foreach my $s (@field_subf) {
@@ -64,7 +72,5 @@ foreach my $s (@field_subf) {
 }
 is($all_ok, 1, 'All subfield codes have been correctly modified');
 $tests_done++;
-
-$field->print;
 
 done_testing($tests_done);

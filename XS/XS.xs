@@ -115,6 +115,40 @@ new(package, tag, ...)
 	OUTPUT:
 		RETVAL
 
+SV *
+tag(field, tag=1000)
+	MARC_XS_Field field
+	uint16_t tag
+	INIT:
+		marc_field_t *f;
+		char tagstring[4];
+	CODE:
+		f = marc_xs_field_get(field);
+		if(tag < 1000) {
+			marc_field_set_tag(f, tag);
+		}
+		tag = marc_field_get_tag(f);
+		sprintf(tagstring, "%03d", tag);
+		RETVAL = newSVpv(tagstring, 3);
+	OUTPUT:
+		RETVAL
+
+int8_t
+is_control_field(field)
+	MARC_XS_Field field
+	INIT:
+		marc_field_t *f;
+		uint16_t tag;
+	CODE:
+		f = marc_xs_field_get(field);
+		tag = marc_field_get_tag(f);
+		if(tag < 10)
+			RETVAL = 1;
+		else
+			RETVAL = 0;
+	OUTPUT:
+		RETVAL
+
 void
 subfields(field)
 	MARC_XS_Field field
