@@ -79,7 +79,6 @@ int8_t marc_subfield_set_val(marc_subfield_t *subfield, char *val)
 		return -1;
 	}
 
-
 	len = strlen(val);
 	_val = malloc((len+1) * sizeof(char));
 	if(_val == NULL) {

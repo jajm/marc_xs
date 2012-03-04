@@ -26,13 +26,7 @@ new(package, code, val=NULL)
 		marc_xs_subfield_t *xs_s;
 	CODE:
 		s = marc_subfield_new(code, val);
-		if(s == NULL) {
-			croak("Failed to create a new subfield");
-		}
 		xs_s = marc_xs_subfield_new(s);
-		if(xs_s == NULL) {
-			croak("Failed to create a new MARC::XS::Subfield");
-		}
 		RETVAL = xs_s;
 	OUTPUT:
 		RETVAL
@@ -135,7 +129,7 @@ subfields(field)
 		it = marc_field_subfields_iterator_new(f);
 		while(marc_field_subfields_iterator_next(it) == 0) {
 			s = marc_field_subfields_iterator_get(it);
-			xs_s = marc_xs_subfield_new(s);
+			xs_s = marc_xs_subfield_inc(s);
 			sv = newSV(0);
 			sv_setref_pv(sv, "MARC::XS::Subfield", (void*)xs_s);
 			XPUSHs(sv);
