@@ -18,15 +18,15 @@ foreach my $code (@codes) {
 }
 
 my $field = MARC::XS::Field->new('200', '1', '2', @subfields);
+my $controlfield = MARC::XS::Field->new('009', "DATA");
 is(ref($field), 'MARC::XS::Field', 'Field is a MARC::XS::Field');
-$tests_done++;
+is(ref($controlfield), 'MARC::XS::Field', 'ControlField is a MARC::XS::Field');
+$tests_done += 2;
 
 is($field->tag, '200', 'Field tag is 200');
 ok(!$field->is_control_field, 'Field is not a control field');
-say "is_control_field ". $field->is_control_field;
-$field->tag('009');
-is($field->tag, '009', 'Field tag changed to 009');
-ok($field->is_control_field, 'Field is a control field');
+is($controlfield->tag, '009', 'ControlField tag to 009');
+ok($controlfield->is_control_field, 'ControlField is a control field');
 $tests_done += 4;
 
 my @field_subf = $field->subfields;
@@ -53,9 +53,33 @@ foreach my $s (@field_subf) {
 	my $val = $s->val;
 	if($val ne "Transformed $code") {
 		$all_ok = 0;
+		last;
 	}
 }
 is($all_ok, 1, 'All subfield values have been correctly modified');
+$tests_done++;
+
+$all_ok = 1;
+foreach my $code (@codes) {
+	my @s = $field->subfield($code);
+	if(@s != 1) {
+		$all_ok = 0;
+		say "!= 1";
+		last;
+	}
+	if($s[0]->val ne "Transformed $code") {
+		$all_ok = 0;
+		say "ne transformed $code";
+		last;
+	}
+	my $s = $field->subfield($code);
+	if($s->val ne "Transformed $code") {
+		say "scalar ne transforme $code";
+		$all_ok = 0;
+		last;
+	}
+}
+is($all_ok, 1, 'All subfield values have been correctly retrieved by code');
 $tests_done++;
 
 foreach my $s (@field_subf) {
@@ -72,5 +96,24 @@ foreach my $s (@field_subf) {
 }
 is($all_ok, 1, 'All subfield codes have been correctly modified');
 $tests_done++;
+
+$all_ok = 1;
+foreach my $code (@codes) {
+	my @s = $field->subfield($code);
+	if($code eq 'x' and @s != @codes) {
+		$all_ok = 0;
+		last;
+	}
+	if($code ne 'x' and @s != 0) {
+		$all_ok = 0;
+		last;
+	}
+}
+is($all_ok, 1, "All 'x' subfields have been retrieved");
+$tests_done++;
+
+is($controlfield->data, "DATA", "Retrieving ControlField data");
+is($controlfield->data("data"), "data", "Setting ControlField data");
+$tests_done += 2;
 
 done_testing($tests_done);

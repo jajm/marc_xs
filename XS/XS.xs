@@ -150,6 +150,34 @@ is_control_field(field)
 		RETVAL
 
 void
+subfield(field, code)
+	MARC_XS_Field field
+	char code
+	INIT:
+		marc_field_t *f;
+		marc_field_subfields_iterator_t *it;
+		marc_subfield_t *s;
+		marc_xs_subfield_t *xs_s;
+		SV *sv;
+		I32 gimme;
+	PPCODE:
+		gimme = GIMME_V;
+		f = marc_xs_field_get(field);
+		it = marc_field_subfields_iterator_new(f);
+		while(marc_field_subfields_iterator_next(it) == 0) {
+			s = marc_field_subfields_iterator_get(it);
+			if(marc_subfield_get_code(s) == code) {
+				xs_s = marc_xs_subfield_inc(s);
+				sv = newSV(0);
+				sv_setref_pv(sv, "MARC::XS::Subfield", (void*)xs_s);
+				XPUSHs(sv);
+				if(gimme == G_SCALAR)
+					break;
+			}
+		}
+		marc_field_subfields_iterator_free(it);
+
+void
 subfields(field)
 	MARC_XS_Field field
 	INIT:
@@ -169,6 +197,21 @@ subfields(field)
 			XPUSHs(sv);
 		}
 		marc_field_subfields_iterator_free(it);
+
+char *
+data(field, data=NULL)
+	MARC_XS_Field field
+	char *data
+	INIT:
+		marc_field_t *f;
+	CODE:
+		f = marc_xs_field_get(field);
+		if(data != NULL) {
+			marc_field_set_value(f, data);
+		}
+		RETVAL = marc_field_get_value(f);
+	OUTPUT:
+		RETVAL
 
 void DESTROY(field)
 	MARC_XS_Field field
