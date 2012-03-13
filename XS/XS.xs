@@ -213,6 +213,31 @@ data(field, data=NULL)
 	OUTPUT:
 		RETVAL
 
+SV *
+add_subfields(field, ...)
+	MARC_XS_Field field
+	INIT:
+		marc_field_t *f;
+		marc_subfield_t *s;
+		int32_t i;
+	CODE:
+		f = marc_xs_field_get(field);
+		RETVAL = newSVuv(0);
+		for(i=1; i<items; i+=2) {
+			if(i+1 < items) {
+				char code = (char)*SvPV_nolen(ST(i));
+				char *val = (char *)SvPV_nolen(ST(i+1));
+				s = marc_field_add_subfield(f, code, val);
+				if(marc_xs_subfield_new(s) == NULL) {
+					RETVAL = &PL_sv_undef;
+					break;
+				}
+				sv_setuv(RETVAL, SvUV(RETVAL)+1);
+			}
+		}
+	OUTPUT:
+		RETVAL
+
 void DESTROY(field)
 	MARC_XS_Field field
 	CODE:

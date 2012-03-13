@@ -116,4 +116,10 @@ is($controlfield->data, "DATA", "Retrieving ControlField data");
 is($controlfield->data("data"), "data", "Setting ControlField data");
 $tests_done += 2;
 
+$field->add_subfields('a', 'abc', 'b', 'bca', 'c', 'cab');
+is($field->subfield('a')->val, 'abc');
+is($field->subfield('b')->val, 'bca');
+is($field->subfield('c')->val, 'cab');
+$tests_done += 3;
+
 done_testing($tests_done);
